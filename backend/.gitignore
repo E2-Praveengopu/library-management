@@ -1,0 +1,38 @@
+# ───────────────────────────────────────────
+# DEPENDENCIES
+# Installed by "npm install" — never commit these.
+# Anyone cloning the repo runs "npm install" to get them back.
+# ───────────────────────────────────────────
+node_modules/
+
+# ───────────────────────────────────────────
+# ENVIRONMENT VARIABLES
+# Contains secrets like DB passwords and JWT keys.
+# NEVER commit this file — it is different on every machine.
+# ───────────────────────────────────────────
+.env
+.env.local
+.env.production
+
+# ───────────────────────────────────────────
+# UPLOADED FILES
+# Book cover images uploaded by admins at runtime.
+# These are user-generated files, not source code.
+# ───────────────────────────────────────────
+uploads/
+
+# ───────────────────────────────────────────
+# NPM LOG FILES
+# Created automatically when npm commands fail.
+# ───────────────────────────────────────────
+npm-debug.log
+npm-debug.log*
+*.log
+
+# ───────────────────────────────────────────
+# OPERATING SYSTEM FILES
+# Auto-created by Windows and macOS — not part of the project.
+# ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
