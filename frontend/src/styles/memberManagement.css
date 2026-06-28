@@ -1,0 +1,699 @@
+/* ============================================================
+   MEMBER MANAGEMENT CSS
+   Admin page for viewing, searching, and managing member accounts.
+   Same design tokens as the rest of the admin area:
+     Roboto · Primary blue #2b6cb0 · Bg #edf2f7
+   ============================================================ */
+
+/* ── Page Shell ──────────────────────────────────────────── */
+.mm-page {
+  min-height: 100vh;
+  background: #edf2f7;
+  font-family: "Roboto", sans-serif;
+}
+
+/* ── Sticky Navigation ───────────────────────────────────── */
+.mm-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.mm-nav-left  { display: flex; align-items: center; gap: 12px; }
+.mm-nav-logo  { font-size: 20px; font-weight: 700; color: #2b6cb0; letter-spacing: -0.5px; }
+.mm-nav-divider { width: 1px; height: 24px; background: #cbd5e0; }
+.mm-nav-title { font-size: 15px; font-weight: 500; color: #4a5568; }
+.mm-nav-right { display: flex; align-items: center; gap: 12px; }
+.mm-nav-link  {
+  font-size: 13px; font-weight: 500; color: #2b6cb0;
+  text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background 0.2s;
+}
+.mm-nav-link:hover { background: #ebf4ff; }
+
+/* ── Page Content ─────────────────────────────────────────── */
+.mm-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* ── Page Header ──────────────────────────────────────────── */
+.mm-page-header {
+  margin-bottom: 24px;
+}
+.mm-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 4px;
+}
+.mm-page-subtitle {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+}
+
+/* ── Stats Cards ──────────────────────────────────────────── */
+.mm-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.mm-stat-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mm-stat-icon {
+  font-size: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.mm-stat-icon.icon-total    { background: #ebf4ff; }
+.mm-stat-icon.icon-active   { background: #f0fff4; }
+.mm-stat-icon.icon-inactive { background: #fff5f5; }
+
+.mm-stat-body { display: flex; flex-direction: column; gap: 2px; }
+.mm-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1;
+}
+.mm-stat-label { font-size: 12px; font-weight: 500; color: #718096; text-transform: uppercase; letter-spacing: 0.6px; }
+
+/* ── Toolbar ──────────────────────────────────────────────── */
+.mm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.mm-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 420px;
+}
+.mm-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+  font-size: 16px;
+  pointer-events: none;
+}
+.mm-search-input {
+  width: 100%;
+  height: 42px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0 12px 0 38px;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  color: #2d3748;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mm-search-input:focus {
+  outline: none;
+  border-color: #2b6cb0;
+  box-shadow: 0 0 0 3px rgba(43,108,176,0.1);
+}
+
+/* ── Status Filter Tabs ───────────────────────────────────── */
+.mm-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  width: fit-content;
+}
+.mm-tab {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #718096;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.2s;
+}
+.mm-tab:hover  { background: #f7fafc; color: #2d3748; }
+.mm-tab.active { background: #2b6cb0; color: #ffffff; }
+.mm-tab.tab-inactive.active { background: #e53e3e; }
+
+/* ── Loading / Empty / Error ──────────────────────────────── */
+.mm-loading {
+  text-align: center;
+  padding: 60px 0;
+  color: #718096;
+}
+.mm-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #2b6cb0;
+  border-radius: 50%;
+  animation: mm-spin 0.7s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes mm-spin { to { transform: rotate(360deg); } }
+
+.mm-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  color: #c53030;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.mm-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #a0aec0;
+}
+.mm-empty-icon { font-size: 48px; display: block; margin-bottom: 12px; }
+.mm-empty h3   { font-size: 18px; color: #4a5568; margin: 0 0 8px; }
+.mm-empty p    { font-size: 14px; margin: 0; }
+
+/* ── Member Cards Grid ────────────────────────────────────── */
+.mm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+/* ── Individual Member Card ───────────────────────────────── */
+.mm-card {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+}
+.mm-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.mm-card.card-inactive { border-color: #fed7d7; background: #fffafa; }
+
+/* Status stripe: thin colored bar at the top of the card */
+.mm-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #2b6cb0;
+  border-radius: 14px 14px 0 0;
+}
+.mm-card.card-inactive::before { background: #e53e3e; }
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.mm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mm-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+
+.mm-card-info { flex: 1; min-width: 0; }
+.mm-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mm-card-email {
+  font-size: 12px;
+  color: #718096;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status badge (top right of header) */
+.mm-status-badge {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.mm-status-badge.badge-active   { background: #f0fff4; color: #276749; }
+.mm-status-badge.badge-inactive { background: #fff5f5; color: #c53030; }
+
+/* ── Card Meta Info ───────────────────────────────────────── */
+.mm-card-meta {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid #f0f4f8;
+  border-bottom: 1px solid #f0f4f8;
+}
+.mm-meta-item {
+  flex: 1;
+  text-align: center;
+}
+.mm-meta-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a202c;
+}
+.mm-meta-label {
+  display: block;
+  font-size: 10px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.mm-meta-item.meta-active .mm-meta-value  { color: #2b6cb0; }
+.mm-meta-item.meta-joined .mm-meta-value  { font-size: 13px; color: #4a5568; }
+
+/* Joined date row */
+.mm-card-joined {
+  font-size: 12px;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Card Action Buttons ──────────────────────────────────── */
+.mm-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mm-btn-view {
+  flex: 1;
+  height: 36px;
+  border: 1.5px solid #2b6cb0;
+  border-radius: 8px;
+  background: transparent;
+  color: #2b6cb0;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mm-btn-view:hover { background: #2b6cb0; color: #ffffff; }
+
+.mm-btn-deactivate {
+  flex: 1;
+  height: 36px;
+  border: 1.5px solid #e53e3e;
+  border-radius: 8px;
+  background: transparent;
+  color: #e53e3e;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mm-btn-deactivate:hover { background: #e53e3e; color: #ffffff; }
+.mm-btn-deactivate:disabled { opacity: 0.5; cursor: wait; }
+
+.mm-btn-activate {
+  flex: 1;
+  height: 36px;
+  border: 1.5px solid #276749;
+  border-radius: 8px;
+  background: transparent;
+  color: #276749;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mm-btn-activate:hover { background: #276749; color: #ffffff; }
+.mm-btn-activate:disabled { opacity: 0.5; cursor: wait; }
+
+/* Status action error (shown below the card) */
+.mm-card-error {
+  font-size: 12px;
+  color: #e53e3e;
+  text-align: center;
+  margin-top: -6px;
+}
+
+/* ── Pagination ───────────────────────────────────────────── */
+.mm-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.mm-pagination-btn {
+  padding: 7px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4a5568;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.mm-pagination-btn:hover:not(:disabled) { border-color: #2b6cb0; color: #2b6cb0; }
+.mm-pagination-btn:disabled { opacity: 0.4; cursor: default; }
+.mm-pagination-page {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #4a5568;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mm-pagination-page:hover   { border-color: #2b6cb0; color: #2b6cb0; }
+.mm-pagination-page.active  { background: #2b6cb0; color: #ffffff; border-color: #2b6cb0; }
+.mm-pagination-dots         { color: #a0aec0; padding: 0 4px; font-size: 14px; }
+
+/* ================================================================
+   MEMBER DETAIL SIDE PANEL
+   Slides in from the right — full-height overlay panel
+   ================================================================ */
+.mm-panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(0,0,0,0.35);
+}
+
+.mm-panel {
+  width: 100%;
+  max-width: 520px;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+  animation: mm-slide-in 0.25s ease;
+}
+@keyframes mm-slide-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* Panel header */
+.mm-panel-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.mm-panel-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+.mm-panel-info { flex: 1; min-width: 0; }
+.mm-panel-name { font-size: 18px; font-weight: 700; color: #1a202c; margin: 0 0 2px; }
+.mm-panel-email { font-size: 13px; color: #718096; margin: 0 0 6px; }
+.mm-panel-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.mm-panel-joined {
+  font-size: 11px;
+  color: #a0aec0;
+  background: #f7fafc;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.mm-panel-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #a0aec0;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+.mm-panel-close:hover { color: #2d3748; background: #f7fafc; }
+
+/* Panel loading / error */
+.mm-panel-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 0;
+  color: #718096;
+  gap: 12px;
+}
+.mm-panel-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2b6cb0;
+  border-radius: 50%;
+  animation: mm-spin 0.7s linear infinite;
+}
+.mm-panel-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  color: #c53030;
+  padding: 12px 16px;
+  margin: 16px;
+  font-size: 14px;
+}
+
+/* Panel body (scrollable) */
+.mm-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+/* Deactivated banner inside panel */
+.mm-panel-deactivated-banner {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 8px;
+  color: #c53030;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Stat mini-cards inside panel */
+.mm-panel-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.mm-panel-stat {
+  background: #f7fafc;
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.mm-panel-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a202c;
+  display: block;
+  line-height: 1;
+}
+.mm-panel-stat-label {
+  font-size: 9px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-top: 4px;
+}
+.mm-panel-stat.pstat-active  .mm-panel-stat-value { color: #2b6cb0; }
+.mm-panel-stat.pstat-overdue .mm-panel-stat-value { color: #e53e3e; }
+
+/* Section headings inside panel */
+.mm-panel-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #718096;
+  margin: 0 0 10px;
+}
+
+/* Active loan rows inside panel */
+.mm-panel-loan {
+  background: #f7fafc;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-left: 3px solid transparent;
+}
+.mm-panel-loan.loan-overdue {
+  border-left-color: #e53e3e;
+  background: #fff5f5;
+}
+.mm-panel-loan-title { font-size: 13px; font-weight: 600; color: #1a202c; margin: 0 0 2px; }
+.mm-panel-loan-author { font-size: 11px; color: #718096; margin: 0; }
+.mm-panel-loan-due {
+  margin-left: auto;
+  text-align: right;
+  font-size: 11px;
+  color: #718096;
+  flex-shrink: 0;
+}
+.mm-panel-loan-due.due-overdue { color: #e53e3e; font-weight: 700; }
+.mm-panel-overdue-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #e53e3e;
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 4px;
+  padding: 1px 5px;
+  display: inline-block;
+  margin-top: 2px;
+}
+
+/* History rows inside panel */
+.mm-panel-hist-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f4f8;
+}
+.mm-panel-hist-row:last-child { border-bottom: none; }
+.mm-panel-hist-title  { font-size: 13px; font-weight: 600; color: #1a202c; margin: 0 0 2px; }
+.mm-panel-hist-author { font-size: 11px; color: #718096; margin: 0; }
+.mm-panel-hist-dates  { margin-left: auto; text-align: right; font-size: 11px; color: #a0aec0; flex-shrink: 0; }
+
+/* Panel footer: activate/deactivate button */
+.mm-panel-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+  background: #f7fafc;
+  flex-shrink: 0;
+}
+.mm-panel-toggle-btn {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border: none;
+}
+.mm-panel-toggle-btn.btn-deactivate {
+  background: #fff5f5;
+  color: #e53e3e;
+  border: 1.5px solid #fc8181;
+}
+.mm-panel-toggle-btn.btn-deactivate:hover { background: #e53e3e; color: #ffffff; }
+.mm-panel-toggle-btn.btn-activate {
+  background: #f0fff4;
+  color: #276749;
+  border: 1.5px solid #9ae6b4;
+}
+.mm-panel-toggle-btn.btn-activate:hover { background: #276749; color: #ffffff; }
+.mm-panel-toggle-btn:disabled { opacity: 0.5; cursor: wait; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mm-stats { grid-template-columns: 1fr 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .mm-nav { padding: 0 16px; }
+  .mm-content { padding: 16px 12px 48px; }
+  .mm-stats { grid-template-columns: 1fr; }
+  .mm-grid  { grid-template-columns: 1fr; }
+  .mm-panel { max-width: 100%; }
+  .mm-panel-stats { grid-template-columns: repeat(2, 1fr); }
+  .mm-nav-title { display: none; }
+}

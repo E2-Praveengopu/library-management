@@ -24,7 +24,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { getBooks, addBook, updateBook, deleteBook } from "../utils/bookApi";
+import { getBooks, addBook, updateBook, deleteBook } from "../services/bookService";
 
 // =============================================================================
 // 1. CREATE THE CONTEXT

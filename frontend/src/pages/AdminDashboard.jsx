@@ -99,9 +99,28 @@ function AdminDashboard() {
 
         {/* Feature cards — admin functionality shortcuts */}
         <div className="dashboard-grid">
-          <div className="dashboard-item">
-            <h3>Manage Users</h3>
-            <p>View, update, and remove registered users from the system.</p>
+          <div className="dashboard-item" style={{ position: "relative" }}>
+            <h3>Manage Members</h3>
+            <p>View all registered members, inspect their loan history, and activate or deactivate accounts.</p>
+            <Link
+              to="/admin/members"
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "8px 16px",
+                backgroundColor: "#6b46c1",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={function (e) { e.target.style.backgroundColor = "#553c9a"; }}
+              onMouseLeave={function (e) { e.target.style.backgroundColor = "#6b46c1"; }}
+            >
+              Manage Members →
+            </Link>
           </div>
 
           {/*

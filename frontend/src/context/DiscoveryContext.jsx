@@ -32,8 +32,8 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
-import { searchBooks, getGenres } from "../utils/bookApi";
-import { borrowBook, returnBook, getMyBorrowings } from "../utils/borrowApi";
+import { searchBooks, getGenres } from "../services/bookService";
+import { borrowBook, returnBook, getMyBorrowings } from "../services/borrowService";
 
 // Create the context (starts empty — filled in by DiscoveryProvider below)
 const DiscoveryContext = createContext(null);

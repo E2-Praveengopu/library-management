@@ -41,6 +41,18 @@ const User = sequelize.define("User", {
     type: DataTypes.ENUM("admin", "member"), // only these two values are allowed
     defaultValue: "member",                  // if no role is given, default to "member"
   },
+
+  /**
+   * isActive controls whether a member account is enabled.
+   * Admins can deactivate a member to block login without deleting their data.
+   * Deactivated members cannot log in and are excluded from borrowing.
+   * Default: true (all new accounts start as active).
+   */
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
 });
 
 module.exports = User;

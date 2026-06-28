@@ -142,7 +142,16 @@ const login = async (req, res) => {
       });
     }
 
-    // Step 4: Compare the plain text password with the hashed one stored in the DB
+    // Step 4: Check if the account is active (admin can deactivate member accounts)
+    // We check this before password verification so we don't reveal whether
+    // the password is correct for a deactivated account.
+    if (user.isActive === false) {
+      return res.status(403).json({
+        message: "Your account has been deactivated. Please contact the library admin.",
+      });
+    }
+
+    // Step 5: Compare the plain text password with the hashed one stored in the DB
     // bcrypt.compare will hash the provided password and check if it matches
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 

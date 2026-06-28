@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { signupUser } from "../utils/authApi";
+import { signupUser } from "../services/authService";
 import withNavigate from "../utils/withNavigate";
 import "../styles/auth.css";
 

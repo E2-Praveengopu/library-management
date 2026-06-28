@@ -36,7 +36,7 @@ import {
   adminMarkReturned,
   getMembers,
   getAvailableBooks,
-} from "../utils/adminBorrowApi";
+} from "../services/adminBorrowService";
 
 const AdminBorrowContext = createContext(null);
 

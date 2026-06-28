@@ -8,9 +8,11 @@ import BookCatalog from "./pages/BookCatalog";
 import BookDiscovery from "./pages/BookDiscovery";
 import AdminBorrowings from "./pages/AdminBorrowings";
 import MemberLoans from "./pages/MemberLoans";
+import MemberManagement from "./pages/MemberManagement";
 import { BookProvider } from "./context/BookContext";
 import { DiscoveryProvider } from "./context/DiscoveryContext";
 import { AdminBorrowProvider } from "./context/AdminBorrowContext";
+import { MemberManagementProvider } from "./context/MemberManagementContext";
 
 /**
  * ProtectedRoute Component
@@ -167,6 +169,22 @@ function App() {
               <AdminBorrowProvider>
                 <AdminBorrowings />
               </AdminBorrowProvider>
+            </ProtectedRoute>
+          }
+        />
+
+        {/*
+          Admin Member Management page — view all members, their loan history,
+          and activate / deactivate accounts.
+          Wrapped in MemberManagementProvider for shared state (search, filters, detail panel).
+        */}
+        <Route
+          path="/admin/members"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <MemberManagementProvider>
+                <MemberManagement />
+              </MemberManagementProvider>
             </ProtectedRoute>
           }
         />

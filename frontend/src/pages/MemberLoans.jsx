@@ -33,7 +33,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getUser, clearAuthData } from "../utils/api";
-import { getMyBorrowings, returnBook } from "../utils/borrowApi";
+import { getMyBorrowings, returnBook } from "../services/borrowService";
 import "../styles/auth.css";
 import "../styles/memberLoans.css";
 
