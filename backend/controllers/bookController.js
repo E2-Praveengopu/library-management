@@ -1,5 +1,7 @@
 const fs   = require("fs");   // built-in Node.js module — reads/writes/deletes files on disk
 const path = require("path"); // built-in Node.js module — builds file paths correctly
+const { Op } = require("sequelize"); // Op = Sequelize operators for WHERE conditions (like, gt, or, etc.)
+const sequelize = require("../config/database"); // needed for sequelize.fn() in getGenres
 const Book = require("../models/Book");
 
 // =============================================================================
@@ -265,13 +267,46 @@ const getAllBooks = async (req, res) => {
     //   page=3, limit=10 → offset = (3-1) × 10 = 20 → skip the first 20 books
     const offset = (page - 1) * limit;
 
-    // --- Fetch the books from the database with pagination ---
+    // --- Read optional search/filter parameters ---
+    // These come from URL query strings, e.g. /api/books?search=gatsby&genre=Fiction&available=true
+    const { search, genre, available } = req.query;
+
+    // Build the WHERE clause dynamically based on which filters were provided
+    // whereClause starts empty {} — we only add conditions that were requested
+    const whereClause = {};
+
+    // SEARCH FILTER: case-insensitive match across title, author, or isbn
+    // Op.or = match ANY of the conditions (not all of them)
+    // Op.iLike = case-insensitive LIKE (PostgreSQL only — "iLike" is not standard SQL)
+    // '%gatsby%' matches "The Great Gatsby", "gatsby Revisited", etc.
+    if (search && search.trim()) {
+      whereClause[Op.or] = [
+        { title:  { [Op.iLike]: "%" + search.trim() + "%" } },
+        { author: { [Op.iLike]: "%" + search.trim() + "%" } },
+        { isbn:   { [Op.iLike]: "%" + search.trim() + "%" } },
+      ];
+    }
+
+    // GENRE FILTER: case-insensitive exact genre match
+    // "Fiction" and "fiction" both find the same genre
+    if (genre && genre.trim()) {
+      whereClause.genre = { [Op.iLike]: genre.trim() };
+    }
+
+    // AVAILABILITY FILTER: only show books with at least 1 copy on the shelf
+    // Op.gt = "greater than" — availableCopies > 0
+    if (available === "true") {
+      whereClause.availableCopies = { [Op.gt]: 0 };
+    }
+
+    // --- Fetch the books from the database with pagination and filtering ---
     // findAndCountAll() is a Sequelize method that does TWO things at once:
-    //   1. count — counts ALL books in the database (for calculating total pages)
+    //   1. count — counts ALL matching books (for calculating total pages)
     //   2. rows  — returns ONLY the books for the current page (using limit and offset)
     //
     // This is more efficient than fetching everything and slicing it in JavaScript.
     const result = await Book.findAndCountAll({
+      where:  whereClause,             // apply all the active filters
       order:  [["createdAt", "DESC"]], // newest books appear first
       limit:  limit,                   // how many to return for this page
       offset: offset,                  // how many to skip
@@ -587,6 +622,57 @@ const deleteBook = async (req, res) => {
   }
 };
 
+/**
+ * GET DISTINCT GENRES
+ * Route: GET /api/books/genres
+ * Access: Admin and Member
+ *
+ * Returns an alphabetically sorted list of every unique genre in the book catalog.
+ * The frontend uses this to populate the Genre filter chips on the discovery page.
+ *
+ * HOW IT WORKS:
+ *   - sequelize.fn("DISTINCT", ...) tells PostgreSQL to return each genre only once
+ *   - Even if 50 books are "Fiction", "Fiction" only appears once in the result
+ *   - { raw: true } returns plain objects instead of Sequelize model instances
+ *     (simpler to work with since we only need the genre string value)
+ *
+ * @param {object} req - The request object (no params needed)
+ * @param {object} res - The response object
+ */
+const getGenres = async (req, res) => {
+  try {
+
+    // Query the database for every distinct genre value in the Books table
+    const genreRows = await Book.findAll({
+      attributes: [
+        // sequelize.fn creates a SQL function call: DISTINCT(genre)
+        // The second argument "genre" is the alias used in the result object
+        [sequelize.fn("DISTINCT", sequelize.col("genre")), "genre"],
+      ],
+      raw: true, // return plain JS objects, not Sequelize model instances
+    });
+
+    // Extract just the genre string from each result row, filter out nulls, sort A-Z
+    const genres = genreRows
+      .map(function (row) { return row.genre; })
+      .filter(Boolean)  // remove any null or empty values
+      .sort();          // alphabetical order
+
+    return res.status(200).json({
+      message: "Genres retrieved successfully",
+      genres: genres,
+    });
+
+  } catch (error) {
+    console.error("Get genres error:", error.message);
+    return res.status(500).json({
+      message: "Something went wrong while fetching genres",
+      error: error.message,
+    });
+  }
+};
+
+
 // Export all controller functions so bookRoutes.js can import and use them
 module.exports = {
   addBook,
@@ -594,4 +680,5 @@ module.exports = {
   getBookById,
   updateBook,
   deleteBook,
+  getGenres,
 };

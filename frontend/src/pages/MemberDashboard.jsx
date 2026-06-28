@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { fetchWithAuth, getUser, clearAuthData } from "../utils/api";
 import "../styles/auth.css";
 
@@ -90,20 +90,44 @@ function MemberDashboard() {
           </div>
         )}
 
-        {/* Feature cards — placeholders for member functionality */}
+        {/* Feature cards — member functionality */}
         <div className="dashboard-grid">
+
+          {/* "Browse Books" now links to the full Book Discovery page */}
           <div className="dashboard-item">
             <h3>Browse Books</h3>
-            <p>Explore all available books in the library collection.</p>
+            <p>Explore all available books, search, filter by genre, and borrow.</p>
+            <Link
+              to="/member/books"
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "8px 16px",
+                backgroundColor: "#276749",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={function (e) { e.target.style.backgroundColor = "#22543d"; }}
+              onMouseLeave={function (e) { e.target.style.backgroundColor = "#276749"; }}
+            >
+              Discover Books →
+            </Link>
           </div>
+
           <div className="dashboard-item">
             <h3>Borrowed Books</h3>
             <p>View the books you have currently borrowed and their due dates.</p>
           </div>
+
           <div className="dashboard-item">
             <h3>Search Catalog</h3>
             <p>Find books by title, author, genre, or ISBN number.</p>
           </div>
+
         </div>
 
       </div>

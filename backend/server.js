@@ -28,6 +28,33 @@ const adminRoutes = require("./routes/adminRoutes");
 const memberRoutes = require("./routes/memberRoutes");
 const bookRoutes = require("./routes/bookRoutes");
 
+// ─── MODELS ───────────────────────────────────────────────────────────────────
+// We require all models here so Sequelize knows about them before calling sync().
+// Even though controllers also require these models, we need them here to set up
+// the associations (relationships between tables) before sync runs.
+const User = require("./models/User");
+const Book = require("./models/Book");
+const Borrowing = require("./models/Borrowing");
+
+// ─── MODEL ASSOCIATIONS ───────────────────────────────────────────────────────
+// Associations define the foreign-key relationships between tables.
+// They must be set up AFTER all models are defined and BEFORE sequelize.sync().
+//
+// hasMany / belongsTo together create the foreign key column in the "child" table.
+// The "as" alias lets us write: borrowing.book instead of borrowing.Book
+//
+// Result: the Borrowings table gets two FK columns: userId, bookId
+
+// A User (member) can have many Borrowing records over their lifetime
+User.hasMany(Borrowing, { foreignKey: "userId", as: "borrowings" });
+// Each Borrowing record belongs to exactly one User
+Borrowing.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+// A Book can appear in many Borrowing records (borrowed many times over time)
+Book.hasMany(Borrowing, { foreignKey: "bookId", as: "borrowings" });
+// Each Borrowing record belongs to exactly one Book
+Borrowing.belongsTo(Book, { foreignKey: "bookId", as: "book" });
+
 // ─── ENSURE UPLOAD FOLDER EXISTS ──────────────────────────────────────────────
 
 // Multer saves cover images to "uploads/books/" on the server's disk.

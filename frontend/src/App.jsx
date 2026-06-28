@@ -5,7 +5,9 @@ import Signup from "./components/Signup";
 import AdminDashboard from "./pages/AdminDashboard";
 import MemberDashboard from "./pages/MemberDashboard";
 import BookCatalog from "./pages/BookCatalog";
+import BookDiscovery from "./pages/BookDiscovery";
 import { BookProvider } from "./context/BookContext";
+import { DiscoveryProvider } from "./context/DiscoveryContext";
 
 /**
  * ProtectedRoute Component
@@ -116,6 +118,24 @@ function App() {
           element={
             <ProtectedRoute requiredRole="member">
               <MemberDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/*
+          Book Discovery page — member only.
+          Wrapped in DiscoveryProvider so BookDiscovery and all its child
+          components (MemberBookCard, BookDetailModal, GenreFilter, etc.)
+          can access the shared discovery state via useDiscovery() without
+          prop drilling.
+        */}
+        <Route
+          path="/member/books"
+          element={
+            <ProtectedRoute requiredRole="member">
+              <DiscoveryProvider>
+                <BookDiscovery />
+              </DiscoveryProvider>
             </ProtectedRoute>
           }
         />

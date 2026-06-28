@@ -338,3 +338,163 @@ export async function deleteBook(id) {
 
   return data;
 }
+
+
+// =============================================================================
+// DISCOVERY & MEMBER API CALLS
+// Functions used on the Book Discovery page (member-facing).
+// =============================================================================
+
+/**
+ * Searches and filters books with full support for live search, genre filter,
+ * availability filter, and pagination.
+ *
+ * Calls GET /api/books with query parameters built from the provided options.
+ *
+ * @param {object} options
+ * @param {number} options.page          - Page number (default: 1)
+ * @param {number} options.limit         - Results per page (default: 12)
+ * @param {string} options.search        - Search text (matches title, author, isbn)
+ * @param {string} options.genre         - Genre to filter by (empty = all genres)
+ * @param {boolean} options.available    - If true, only return books with copies available
+ * @returns {object} - { message, pagination, books }
+ * @throws {Error} - If the request fails
+ */
+export async function searchBooks({ page = 1, limit = 12, search = "", genre = "", available = false } = {}) {
+  const token = getToken();
+
+  // Build query string — only include params that have real values
+  // URLSearchParams handles encoding of special characters (spaces, &, etc.)
+  const params = new URLSearchParams({ page, limit });
+  if (search) params.append("search", search);
+  if (genre) params.append("genre", genre);
+  if (available) params.append("available", "true");
+
+  const response = await fetch(`${BASE_URL}/api/books?${params.toString()}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to search books.");
+  }
+
+  return data;
+}
+
+/**
+ * Returns all distinct genres that exist in the book catalog.
+ * Used to populate the genre filter chips on the discovery page.
+ *
+ * @returns {object} - { message, genres: ["Biography", "Fiction", ...] }
+ * @throws {Error} - If the request fails
+ */
+export async function getGenres() {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/books/genres`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch genres.");
+  }
+
+  return data;
+}
+
+/**
+ * Borrows a specific book for the currently logged-in member.
+ *
+ * Rules enforced by the backend:
+ *   - The book must have at least 1 available copy
+ *   - The member cannot borrow the same book twice simultaneously
+ *
+ * @param {number} bookId - The ID of the book to borrow
+ * @returns {object} - { message, borrowing: { id, dueDate, status } }
+ * @throws {Error} - If no copies are available, already borrowed, or token is invalid
+ */
+export async function borrowBook(bookId) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/member/borrow/${bookId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to borrow book.");
+  }
+
+  return data;
+}
+
+/**
+ * Returns a borrowed book back to the library.
+ *
+ * @param {number} borrowId - The ID of the Borrowing record (NOT the book ID)
+ * @returns {object} - { message, borrowing: { id, status, returnedAt } }
+ * @throws {Error} - If the borrowing record is not found or already returned
+ */
+export async function returnBook(borrowId) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/member/return/${borrowId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to return book.");
+  }
+
+  return data;
+}
+
+/**
+ * Retrieves all books borrowed by the currently logged-in member.
+ * Includes both active ("borrowed") and past ("returned") records.
+ *
+ * @returns {object} - { message, borrowings: [{ id, status, dueDate, book: {...} }] }
+ * @throws {Error} - If the request fails
+ */
+export async function getMyBorrowings() {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/member/my-books`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch your borrowed books.");
+  }
+
+  return data;
+}

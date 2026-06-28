@@ -9,6 +9,7 @@ const {
   getBookById,
   updateBook,
   deleteBook,
+  getGenres,
 } = require("../controllers/bookController");
 
 /**
@@ -65,20 +66,39 @@ const {
 /**
  * GET /api/books
  *
- * Returns a paginated list of all books in the catalog.
+ * Returns a paginated list of books in the catalog, with optional filtering.
  *
- * Optional query parameters in the URL:
- *   ?page=1   — which page to show (default is 1)
- *   ?limit=10 — how many books per page (default is 10)
+ * Query parameters:
+ *   ?page=1           — which page to show (default 1)
+ *   ?limit=10         — books per page (default 10)
+ *   ?search=gatsby    — filter by title, author, or isbn (case-insensitive)
+ *   ?genre=Fiction    — filter to only this genre
+ *   ?available=true   — only show books with copies available
  *
  * Example requests:
- *   GET /api/books              → page 1, 10 books
- *   GET /api/books?page=2       → page 2, 10 books
- *   GET /api/books?page=1&limit=5 → page 1, 5 books
+ *   GET /api/books                           → all books, page 1
+ *   GET /api/books?search=tolkien            → books by Tolkien
+ *   GET /api/books?genre=Fiction&available=true → available fiction books
  *
  * Middleware chain: verifyToken → getAllBooks
  */
 router.get("/", verifyToken, getAllBooks);
+
+/**
+ * GET /api/books/genres
+ *
+ * Returns a sorted list of every unique genre that exists in the catalog.
+ * Used by the member discovery page to populate the genre filter chips.
+ *
+ * IMPORTANT: This route must be defined BEFORE the /:id route.
+ * If it were after, Express would interpret "genres" as an ID value.
+ *
+ * Example response:
+ *   { genres: ["Biography", "Fiction", "History", "Science", ...] }
+ *
+ * Middleware chain: verifyToken → getGenres
+ */
+router.get("/genres", verifyToken, getGenres);
 
 /**
  * GET /api/books/:id

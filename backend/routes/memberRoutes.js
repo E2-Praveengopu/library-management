@@ -1,6 +1,7 @@
 const express = require("express");
-const router = express.Router();
+const router  = express.Router();
 const { verifyToken, authorizeMember } = require("../middleware/authMiddleware");
+const { borrowBook, returnBook, getMyBorrowings } = require("../controllers/borrowingController");
 
 /**
  * MEMBER ROUTES (Protected — Member only)
@@ -9,40 +10,75 @@ const { verifyToken, authorizeMember } = require("../middleware/authMiddleware")
  *  1. verifyToken    → checks that the request has a valid JWT token
  *  2. authorizeMember → checks that the logged-in user has the "member" role
  *
- * If either check fails, the request is blocked before reaching the route handler.
- *
- * Admins who try to access these routes will get a 403 Forbidden error.
+ * FULL ROUTE TABLE:
+ *   GET  /api/member/dashboard          → welcome message (existing)
+ *   GET  /api/member/my-books           → get all of this member's borrowed books
+ *   POST /api/member/borrow/:bookId     → borrow a specific book by its ID
+ *   PUT  /api/member/return/:borrowId   → return a specific borrowed book
  */
+
 
 /**
  * GET /api/member/dashboard
  *
  * A sample member dashboard route.
  * Only accessible to users with role = "member".
- *
- * How to test:
- *  - Login as a member user to get a token
- *  - Send GET request with header:  Authorization: Bearer <your_token>
  */
 router.get("/dashboard", verifyToken, authorizeMember, (req, res) => {
-  // req.user is available here because verifyToken added it
   return res.status(200).json({
     message: `Welcome to the Member Dashboard, user ID: ${req.user.id}`,
     role: req.user.role,
   });
 });
 
+
 /**
- * GET /api/member/books
+ * GET /api/member/my-books
  *
- * A sample route to represent a member browsing available books.
- * Only members can access this.
+ * Returns all books that the logged-in member has borrowed (past and present).
+ * Each record includes the book's details and the borrow status.
+ *
+ * Response: { message, borrowings: [{ id, status, dueDate, returnedAt, borrowedAt, book: {...} }] }
+ *
+ * Middleware chain: verifyToken → authorizeMember → getMyBorrowings
  */
-router.get("/books", verifyToken, authorizeMember, (req, res) => {
-  return res.status(200).json({
-    message: "Member: Here is the list of books available to you",
-    accessedBy: req.user.id,
-  });
-});
+router.get("/my-books", verifyToken, authorizeMember, getMyBorrowings);
+
+
+/**
+ * POST /api/member/borrow/:bookId
+ *
+ * Borrows the book with the given ID for the logged-in member.
+ *
+ * The bookId comes from the URL: POST /api/member/borrow/7 → bookId = 7
+ *
+ * Rules enforced by the controller:
+ *   - The book must exist in the catalog
+ *   - At least one copy must be available (availableCopies > 0)
+ *   - The member must not already have this book borrowed
+ *
+ * On success: creates a Borrowing record, decrements book.availableCopies by 1
+ * Response: { message, borrowing: { id, bookId, dueDate, status } }
+ *
+ * Middleware chain: verifyToken → authorizeMember → borrowBook
+ */
+router.post("/borrow/:bookId", verifyToken, authorizeMember, borrowBook);
+
+
+/**
+ * PUT /api/member/return/:borrowId
+ *
+ * Marks a borrowed book as returned.
+ *
+ * The borrowId is the ID of the Borrowing record (not the book ID).
+ * Only the member who borrowed it can return it.
+ *
+ * On success: updates Borrowing.status to "returned", increments book.availableCopies
+ * Response: { message, borrowing: { id, status, returnedAt } }
+ *
+ * Middleware chain: verifyToken → authorizeMember → returnBook
+ */
+router.put("/return/:borrowId", verifyToken, authorizeMember, returnBook);
+
 
 module.exports = router;
