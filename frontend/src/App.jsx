@@ -6,8 +6,11 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MemberDashboard from "./pages/MemberDashboard";
 import BookCatalog from "./pages/BookCatalog";
 import BookDiscovery from "./pages/BookDiscovery";
+import AdminBorrowings from "./pages/AdminBorrowings";
+import MemberLoans from "./pages/MemberLoans";
 import { BookProvider } from "./context/BookContext";
 import { DiscoveryProvider } from "./context/DiscoveryContext";
+import { AdminBorrowProvider } from "./context/AdminBorrowContext";
 
 /**
  * ProtectedRoute Component
@@ -136,6 +139,34 @@ function App() {
               <DiscoveryProvider>
                 <BookDiscovery />
               </DiscoveryProvider>
+            </ProtectedRoute>
+          }
+        />
+
+        {/*
+          Member Loans page — shows active borrows (with overdue indicators)
+          and full borrowing history. Uses local state — no context wrapper needed.
+        */}
+        <Route
+          path="/member/loans"
+          element={
+            <ProtectedRoute requiredRole="member">
+              <MemberLoans />
+            </ProtectedRoute>
+          }
+        />
+
+        {/*
+          Admin Borrow Management page — issue books, mark returns, view all records.
+          Wrapped in AdminBorrowProvider for shared state (search, filters, modals).
+        */}
+        <Route
+          path="/admin/borrowings"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminBorrowProvider>
+                <AdminBorrowings />
+              </AdminBorrowProvider>
             </ProtectedRoute>
           }
         />

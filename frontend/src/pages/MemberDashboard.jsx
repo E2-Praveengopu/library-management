@@ -119,8 +119,27 @@ function MemberDashboard() {
           </div>
 
           <div className="dashboard-item">
-            <h3>Borrowed Books</h3>
-            <p>View the books you have currently borrowed and their due dates.</p>
+            <h3>My Borrowed Books</h3>
+            <p>View your active loans with due dates, overdue alerts, and your full borrowing history.</p>
+            <Link
+              to="/member/loans"
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "8px 16px",
+                backgroundColor: "#2b6cb0",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={function (e) { e.target.style.backgroundColor = "#2c5282"; }}
+              onMouseLeave={function (e) { e.target.style.backgroundColor = "#2b6cb0"; }}
+            >
+              View My Loans →
+            </Link>
           </div>
 
           <div className="dashboard-item">

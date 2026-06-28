@@ -133,8 +133,27 @@ function AdminDashboard() {
           </div>
 
           <div className="dashboard-item">
-            <h3>View Reports</h3>
-            <p>Access borrowing history, overdue books, and system reports.</p>
+            <h3>Borrow Management</h3>
+            <p>Issue books to members, process returns, and monitor overdue loans.</p>
+            <Link
+              to="/admin/borrowings"
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "8px 16px",
+                backgroundColor: "#276749",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={function (e) { e.target.style.backgroundColor = "#22543d"; }}
+              onMouseLeave={function (e) { e.target.style.backgroundColor = "#276749"; }}
+            >
+              Manage Loans →
+            </Link>
           </div>
         </div>
 
