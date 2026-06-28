@@ -2,6 +2,8 @@ const express = require("express");
 const router  = express.Router();
 const { verifyToken, authorizeAdmin } = require("../middleware/authMiddleware");
 
+const { getAdminDashboard } = require("../controllers/adminDashboardController");
+
 const {
   getAllBorrowings,
   issueBorrow,
@@ -43,14 +45,13 @@ const {
 
 /**
  * GET /api/admin/dashboard
- * Simple health-check confirming the admin's token is valid.
+ *
+ * Returns real dashboard data:
+ *   stats         → totalBooks, totalMembers, activeLoans, overdueLoans
+ *   recentBooks   → last 5 books added to the catalog
+ *   recentBorrows → last 5 borrowing records with member + book info
  */
-router.get("/dashboard", verifyToken, authorizeAdmin, (req, res) => {
-  return res.status(200).json({
-    message: `Welcome to the Admin Dashboard, user ID: ${req.user.id}`,
-    role: req.user.role,
-  });
-});
+router.get("/dashboard", verifyToken, authorizeAdmin, getAdminDashboard);
 
 
 // ─── MEMBER MANAGEMENT ───────────────────────────────────────────────────────

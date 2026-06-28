@@ -1,6 +1,7 @@
 const express = require("express");
 const router  = express.Router();
 const { verifyToken, authorizeMember } = require("../middleware/authMiddleware");
+const { getMemberDashboard } = require("../controllers/memberDashboardController");
 const { borrowBook, returnBook, getMyBorrowings } = require("../controllers/borrowingController");
 
 /**
@@ -21,15 +22,12 @@ const { borrowBook, returnBook, getMyBorrowings } = require("../controllers/borr
 /**
  * GET /api/member/dashboard
  *
- * A sample member dashboard route.
- * Only accessible to users with role = "member".
+ * Returns the logged-in member's dashboard data:
+ *   stats         → totalBorrowed, activeBorrows, returned, overdue
+ *   activeLoans   → books the member currently holds, with due dates and overdue flags
+ *   recentHistory → last 5 books the member has returned
  */
-router.get("/dashboard", verifyToken, authorizeMember, (req, res) => {
-  return res.status(200).json({
-    message: `Welcome to the Member Dashboard, user ID: ${req.user.id}`,
-    role: req.user.role,
-  });
-});
+router.get("/dashboard", verifyToken, authorizeMember, getMemberDashboard);
 
 
 /**

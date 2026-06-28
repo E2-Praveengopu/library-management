@@ -1,0 +1,427 @@
+/* ============================================================
+   ADMIN DASHBOARD CSS
+   Page: /admin/dashboard
+   Prefix: adash-
+
+   Design tokens (same as the rest of the admin area):
+     Primary blue  : #2b6cb0
+     Background    : #edf2f7
+     Card bg       : #ffffff
+     Text dark     : #1a202c
+     Text muted    : #718096
+     Font          : Roboto
+   ============================================================ */
+
+
+/* ── Page wrapper ────────────────────────────────────────── */
+.adash-page {
+  min-height: 100vh;
+  background: #edf2f7;
+  font-family: "Roboto", sans-serif;
+}
+
+
+/* ── Sticky navigation bar ───────────────────────────────── */
+.adash-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.adash-nav-left  { display: flex; align-items: center; gap: 14px; }
+.adash-nav-logo  {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2b6cb0;
+  letter-spacing: -0.5px;
+}
+.adash-nav-divider { width: 1px; height: 24px; background: #cbd5e0; }
+.adash-nav-title   { font-size: 15px; font-weight: 500; color: #4a5568; }
+
+.adash-nav-right { display: flex; align-items: center; gap: 10px; }
+.adash-nav-link  {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2b6cb0;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.adash-nav-link:hover { background: #ebf4ff; }
+
+
+/* ── Main content area ───────────────────────────────────── */
+.adash-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+
+/* ── Welcome header ──────────────────────────────────────── */
+.adash-welcome {
+  margin-bottom: 28px;
+}
+.adash-welcome-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 4px;
+}
+.adash-welcome-subtitle {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+}
+
+
+/* ── Loading state ───────────────────────────────────────── */
+.adash-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  gap: 16px;
+  color: #718096;
+}
+.adash-spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #2b6cb0;
+  border-radius: 50%;
+  animation: adash-spin 0.7s linear infinite;
+}
+@keyframes adash-spin { to { transform: rotate(360deg); } }
+.adash-loading p { font-size: 15px; }
+
+
+/* ── Error banner ────────────────────────────────────────── */
+.adash-error {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-radius: 10px;
+  color: #c53030;
+  padding: 14px 18px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+
+/* ── 4 Stat Cards ────────────────────────────────────────── */
+/*
+  The four summary numbers at the top:
+  Total Books | Total Members | Active Loans | Overdue Loans
+*/
+.adash-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.adash-stat {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border-left: 4px solid transparent;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.adash-stat:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+
+/* Each stat card has a coloured left border + matching icon background */
+.adash-stat.stat-books    { border-left-color: #2b6cb0; }
+.adash-stat.stat-members  { border-left-color: #6b46c1; }
+.adash-stat.stat-active   { border-left-color: #276749; }
+.adash-stat.stat-overdue  { border-left-color: #e53e3e; }
+
+.adash-stat-icon {
+  font-size: 30px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.adash-stat.stat-books   .adash-stat-icon { background: #ebf4ff; }
+.adash-stat.stat-members .adash-stat-icon { background: #f3e8ff; }
+.adash-stat.stat-active  .adash-stat-icon { background: #f0fff4; }
+.adash-stat.stat-overdue .adash-stat-icon { background: #fff5f5; }
+
+.adash-stat-body { flex: 1; }
+.adash-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1;
+  display: block;
+}
+.adash-stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: block;
+  margin-top: 4px;
+}
+
+
+/* ── Two column layout: Recent Books + Recent Borrows ─────── */
+.adash-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* Each panel is a white card */
+.adash-panel {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+/* Panel header: title + optional "View all" link */
+.adash-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #f0f4f8;
+}
+.adash-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+}
+.adash-panel-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2b6cb0;
+  text-decoration: none;
+}
+.adash-panel-link:hover { text-decoration: underline; }
+
+/* Empty state inside a panel */
+.adash-panel-empty {
+  padding: 36px 22px;
+  text-align: center;
+  color: #a0aec0;
+  font-size: 14px;
+}
+.adash-panel-empty-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+
+
+/* ── Recently Added Books list ────────────────────────────── */
+/* Each book is a horizontal row: thumbnail + info */
+.adash-book-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #f7fafc;
+  transition: background 0.15s;
+}
+.adash-book-row:last-child { border-bottom: none; }
+.adash-book-row:hover { background: #f7fafc; }
+
+/* Thumbnail — small fixed-size cover or placeholder */
+.adash-book-thumb {
+  width: 40px;
+  height: 56px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #edf2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.adash-book-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.adash-book-thumb-icon { font-size: 20px; color: #a0aec0; }
+
+.adash-book-info  { flex: 1; min-width: 0; }
+.adash-book-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adash-book-author {
+  font-size: 12px;
+  color: #718096;
+  margin: 0 0 4px;
+}
+.adash-book-meta { display: flex; align-items: center; gap: 8px; }
+.adash-book-genre {
+  font-size: 10px;
+  font-weight: 600;
+  color: #2b6cb0;
+  background: #ebf4ff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.adash-book-date { font-size: 11px; color: #a0aec0; }
+
+/* Availability pill on the right */
+.adash-book-copies {
+  flex-shrink: 0;
+  text-align: right;
+}
+.adash-copies-num {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1;
+}
+.adash-copies-label { font-size: 10px; color: #a0aec0; letter-spacing: 0.3px; }
+
+
+/* ── Recent Borrowings list ───────────────────────────────── */
+/* Each row: member info on left, book title in middle, status on right */
+.adash-borrow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #f7fafc;
+  transition: background 0.15s;
+}
+.adash-borrow-row:last-child { border-bottom: none; }
+.adash-borrow-row:hover { background: #f7fafc; }
+
+/* Small coloured circle with member's initial */
+.adash-member-initial {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.adash-borrow-info { flex: 1; min-width: 0; }
+.adash-borrow-member {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.adash-borrow-book {
+  font-size: 12px;
+  color: #718096;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adash-borrow-right { flex-shrink: 0; text-align: right; }
+.adash-borrow-status {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.adash-borrow-status.status-active   { background: #f0fff4; color: #276749; }
+.adash-borrow-status.status-overdue  { background: #fff5f5; color: #c53030; }
+.adash-borrow-status.status-returned { background: #f7fafc; color: #718096; }
+.adash-borrow-due {
+  display: block;
+  font-size: 11px;
+  color: #a0aec0;
+}
+
+
+/* ── Quick links section (at the bottom) ─────────────────── */
+.adash-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+.adash-link-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 22px 20px;
+  text-decoration: none;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1.5px solid transparent;
+}
+.adash-link-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.adash-link-card.link-blue   { border-color: #bee3f8; }
+.adash-link-card.link-purple { border-color: #d6bcfa; }
+.adash-link-card.link-green  { border-color: #9ae6b4; }
+
+.adash-link-icon  { font-size: 28px; display: block; margin-bottom: 10px; }
+.adash-link-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 4px;
+}
+.adash-link-desc  { font-size: 12px; color: #718096; margin: 0; }
+.adash-link-arrow {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2b6cb0;
+}
+.adash-link-card.link-purple .adash-link-arrow { color: #6b46c1; }
+.adash-link-card.link-green  .adash-link-arrow { color: #276749; }
+
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .adash-stats  { grid-template-columns: repeat(2, 1fr); }
+  .adash-panels { grid-template-columns: 1fr; }
+  .adash-links  { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .adash-nav     { padding: 0 16px; }
+  .adash-content { padding: 20px 14px 48px; }
+  .adash-stats   { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .adash-links   { grid-template-columns: 1fr; }
+  .adash-nav-title { display: none; }
+  .adash-stat-value { font-size: 26px; }
+}
