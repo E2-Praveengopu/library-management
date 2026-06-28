@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { fetchWithAuth, getUser, clearAuthData } from "../utils/api";
 import "../styles/auth.css";
 
@@ -97,16 +97,41 @@ function AdminDashboard() {
           </div>
         )}
 
-        {/* Feature cards — placeholders for admin functionality */}
+        {/* Feature cards — admin functionality shortcuts */}
         <div className="dashboard-grid">
           <div className="dashboard-item">
             <h3>Manage Users</h3>
             <p>View, update, and remove registered users from the system.</p>
           </div>
-          <div className="dashboard-item">
+
+          {/*
+            "Manage Books" card now links to the Book Catalog page.
+            Link is from react-router-dom — navigates without a full page reload.
+          */}
+          <div className="dashboard-item" style={{ position: "relative" }}>
             <h3>Manage Books</h3>
             <p>Add new books, update details, or remove books from the catalog.</p>
+            <Link
+              to="/admin/books"
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "8px 16px",
+                backgroundColor: "#2b6cb0",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+                transition: "background-color 0.2s ease",
+              }}
+              onMouseEnter={function (e) { e.target.style.backgroundColor = "#2c5282"; }}
+              onMouseLeave={function (e) { e.target.style.backgroundColor = "#2b6cb0"; }}
+            >
+              Open Catalog →
+            </Link>
           </div>
+
           <div className="dashboard-item">
             <h3>View Reports</h3>
             <p>Access borrowing history, overdue books, and system reports.</p>

@@ -200,3 +200,141 @@ export async function fetchWithAuth(url) {
 
   return data;
 }
+
+
+// =============================================================================
+// BOOK API CALLS
+// Functions that talk to the backend /api/books routes
+// Admin-only routes (POST, PUT, DELETE) require a valid admin JWT token.
+// =============================================================================
+
+/**
+ * Fetches a paginated list of all books from the backend.
+ *
+ * The backend returns books in batches (pages) so we don't load thousands
+ * of records at once. You control which page and how many books per page.
+ *
+ * @param {number} page  - Which page to fetch. Page 1 = first 10 books, page 2 = next 10, etc.
+ * @param {number} limit - How many books to show per page (default: 10)
+ * @returns {object} - { message, pagination: { currentPage, totalPages, totalBooks, ... }, books: [...] }
+ * @throws {Error} - If the request fails or the token is invalid
+ */
+export async function getBooks(page = 1, limit = 10) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/books?page=${page}&limit=${limit}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch books.");
+  }
+
+  return data;
+}
+
+/**
+ * Adds a new book to the library system.
+ *
+ * This uses multipart/form-data (not JSON) because we need to upload
+ * the book's cover image file alongside the text fields.
+ *
+ * IMPORTANT: Do NOT set a Content-Type header manually here.
+ * When you pass a FormData object as the body, the browser automatically
+ * sets Content-Type to "multipart/form-data" and adds the required
+ * "boundary" string that separates each field in the request body.
+ *
+ * Required FormData fields: title, author, isbn, genre, totalCopies
+ * Optional FormData fields: availableCopies, coverImage (file)
+ *
+ * @param {FormData} formData - The book data including optional cover image file
+ * @returns {object} - { message, book }  (the newly created book object)
+ * @throws {Error} - If required fields are missing, ISBN is duplicate, or token is invalid
+ */
+export async function addBook(formData) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/books`, {
+    method: "POST",
+    headers: {
+      // No Content-Type here — the browser sets it automatically for FormData
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to add book.");
+  }
+
+  return data;
+}
+
+/**
+ * Updates an existing book's details.
+ *
+ * Only send the fields you want to change — all fields are optional.
+ * If you include a new coverImage file, it replaces the old one on the server.
+ *
+ * @param {number}   id       - The book's unique ID in the database
+ * @param {FormData} formData - The updated fields (any subset of book fields)
+ * @returns {object} - { message, book }  (the updated book object)
+ * @throws {Error} - If the book is not found or validation fails
+ */
+export async function updateBook(id, formData) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/books/${id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to update book.");
+  }
+
+  return data;
+}
+
+/**
+ * Permanently deletes a book from the library system.
+ *
+ * This also removes the cover image file from the server's uploads folder.
+ * This action cannot be undone — always confirm with the user first.
+ *
+ * @param {number} id - The book's unique ID in the database
+ * @returns {object} - { message }
+ * @throws {Error} - If the book is not found or the token is invalid
+ */
+export async function deleteBook(id) {
+  const token = getToken();
+
+  const response = await fetch(`${BASE_URL}/api/books/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to delete book.");
+  }
+
+  return data;
+}

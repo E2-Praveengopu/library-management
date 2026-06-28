@@ -1,0 +1,1179 @@
+/* ============================================================
+   LIBRARY MANAGEMENT SYSTEM — BOOK CATALOG STYLES
+   File: src/styles/bookCatalog.css
+
+   Design Tokens (shared with auth.css):
+     Font        : Roboto (loaded via Google Fonts in index.html)
+     Primary Blue: #2b6cb0   (buttons, links, badges)
+     Hover Blue  : #2c5282
+     Background  : #edf2f7   (page background)
+     Card        : #ffffff   (white cards)
+     Text Dark   : #2d3748   (main text)
+     Text Light  : #718096   (secondary / placeholder text)
+     Border      : #e2e8f0   (subtle dividers)
+     Error Red   : #c53030
+     Success Green: #48bb78
+
+   Responsive Breakpoints:
+     Mobile : < 640px   (single column, stacked toolbar)
+     Tablet : 640–1024px (2-column grid)
+     Desktop: > 1024px  (3–4 column grid)
+   ============================================================ */
+
+
+/* ============================================================
+   1. CATALOG PAGE WRAPPER
+   Full-screen container with the light grey background.
+   ============================================================ */
+.catalog-page {
+  min-height: 100vh;
+  background-color: #edf2f7;
+  font-family: "Roboto", sans-serif;
+  color: #2d3748;
+}
+
+
+/* ============================================================
+   2. TOP NAVIGATION BAR
+   Sticky bar at the top with logo, page title, and logout.
+   Stays in place as the user scrolls down.
+   ============================================================ */
+.catalog-nav {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  /* sticky: the nav stays at the top of the viewport when scrolling */
+  position: sticky;
+  top: 0;
+  z-index: 100; /* make sure it floats above other content */
+}
+
+/* Left side: logo + page breadcrumb */
+.catalog-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* "LIBRARY" text logo */
+.catalog-nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b6cb0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* The thin vertical separator between logo and page name */
+.catalog-nav-divider {
+  width: 1px;
+  height: 20px;
+  background-color: #cbd5e0;
+}
+
+/* "Book Catalog" breadcrumb text */
+.catalog-nav-page {
+  font-size: 15px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+/* Right side: user greeting and logout button */
+.catalog-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* "Hello, Admin" text */
+.catalog-nav-user {
+  font-size: 14px;
+  color: #718096;
+  font-weight: 400;
+}
+
+/* Back to Dashboard link */
+.catalog-nav-back {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2b6cb0;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.catalog-nav-back:hover {
+  background-color: #ebf4ff;
+}
+
+
+/* ============================================================
+   3. MAIN CONTENT AREA
+   Centred container with horizontal padding for breathing room.
+   ============================================================ */
+.catalog-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+
+/* ============================================================
+   4. TOOLBAR
+   Row with the page title on the left and "Add Book" on the right.
+   On mobile, they stack vertically.
+   ============================================================ */
+.catalog-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap; /* wrap to a second line on narrow screens */
+}
+
+.catalog-toolbar-left h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 4px;
+}
+
+.catalog-toolbar-left p {
+  font-size: 14px;
+  color: #718096;
+  font-weight: 400;
+}
+
+/* "Add Book" primary button */
+.btn-add-book {
+  height: 44px;
+  padding: 0 22px;
+  background-color: #2b6cb0;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.btn-add-book:hover {
+  background-color: #2c5282;
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.35);
+}
+
+.btn-add-book:active {
+  transform: scale(0.98);
+}
+
+/* Plus icon inside the button */
+.btn-add-book .btn-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+
+/* ============================================================
+   5. FILTER BAR
+   Sits between the toolbar and the book grid.
+   Shows total count and view toggle (grid / list).
+   ============================================================ */
+.catalog-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* "42 books found" text */
+.catalog-book-count {
+  font-size: 14px;
+  color: #718096;
+  font-weight: 400;
+}
+
+/* Grid / List toggle button group */
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  background-color: #edf2f7;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+/* Each toggle button (Grid or List) */
+.view-btn {
+  height: 32px;
+  padding: 0 14px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  color: #718096;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Active / selected view button */
+.view-btn.active {
+  background-color: #ffffff;
+  color: #2b6cb0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-btn:hover:not(.active) {
+  color: #4a5568;
+}
+
+
+/* ============================================================
+   6. LOADING STATE
+   Centered spinner and message shown while books are fetching.
+   ============================================================ */
+.catalog-loading {
+  text-align: center;
+  padding: 80px 20px;
+  color: #718096;
+}
+
+/* Simple CSS-only spinning circle */
+.catalog-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2b6cb0;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+
+  /* animation: spin 0.8s forever, rotating 360 degrees */
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.catalog-loading p {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   7. ERROR STATE
+   Red-bordered box shown when a server request fails.
+   ============================================================ */
+.catalog-error {
+  background-color: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-left: 4px solid #fc8181;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  color: #c53030;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   8. SUCCESS / TOAST NOTIFICATION
+   Green bar that briefly confirms a successful action.
+   ============================================================ */
+.catalog-success {
+  background-color: #f0fff4;
+  border: 1px solid #9ae6b4;
+  border-left: 4px solid #48bb78;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  color: #276749;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   9. EMPTY STATE
+   Shown when the library has no books yet.
+   ============================================================ */
+.catalog-empty {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.catalog-empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.catalog-empty h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.catalog-empty p {
+  font-size: 15px;
+  color: #718096;
+  margin-bottom: 24px;
+}
+
+
+/* ============================================================
+   10. BOOK GRID
+   Responsive multi-column card layout.
+   auto-fill: create as many columns as fit within the container
+   minmax(240px, 1fr): each column is at least 240px wide
+   ============================================================ */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+
+/* ============================================================
+   11. BOOK CARD (GRID VIEW)
+   White card with cover image, book details, and action buttons.
+   ============================================================ */
+.book-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  border: 1px solid #e8edf3;
+  overflow: hidden; /* clip the cover image to the card's rounded corners */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Cover image container — fixed height so all cards are the same size */
+.book-card-image-wrap {
+  width: 100%;
+  height: 180px;
+  background-color: #ebf4ff;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Actual <img> tag inside the card */
+.book-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fills the box without stretching, crops if needed */
+  display: block;
+}
+
+/* Placeholder shown when there is no cover image */
+.book-card-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+}
+
+.book-card-no-image span {
+  font-size: 36px;
+}
+
+.book-card-no-image p {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 400;
+}
+
+/* White section below the image with text details */
+.book-card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* fill remaining card height */
+}
+
+/* Book title */
+.book-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 4px;
+  line-height: 1.4;
+
+  /* Clamp title to 2 lines, adding "..." if longer */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Author name */
+.book-card-author {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+/* Genre badge pill */
+.book-genre-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  background-color: #ebf4ff;
+  color: #2b6cb0;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+/* Row showing ISBN */
+.book-card-isbn {
+  font-size: 12px;
+  color: #a0aec0;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+/* "Available: 3 / 5 copies" indicator row */
+.book-copies {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.book-copies-label {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 400;
+}
+
+/* The coloured number showing available count */
+.book-copies-avail {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Green when copies are available */
+.copies-available {
+  color: #276749;
+}
+
+/* Red when no copies are left */
+.copies-unavailable {
+  color: #c53030;
+}
+
+/* Thin separator above action buttons */
+.book-card-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 0 0 12px;
+}
+
+/* Row at the bottom with Edit and Delete buttons */
+.book-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto; /* push to the bottom of the card */
+}
+
+/* Shared button style for Edit and Delete inside a card */
+.btn-card {
+  flex: 1;
+  height: 34px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: 1.5px solid;
+}
+
+/* Edit button — blue outline */
+.btn-edit {
+  background-color: transparent;
+  color: #2b6cb0;
+  border-color: #2b6cb0;
+}
+
+.btn-edit:hover {
+  background-color: #2b6cb0;
+  color: #ffffff;
+}
+
+/* Delete button — red outline */
+.btn-delete {
+  background-color: transparent;
+  color: #e53e3e;
+  border-color: #e53e3e;
+}
+
+.btn-delete:hover {
+  background-color: #e53e3e;
+  color: #ffffff;
+}
+
+
+/* ============================================================
+   12. BOOK LIST VIEW
+   Compact horizontal rows instead of cards.
+   ============================================================ */
+.book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual list row */
+.book-list-row {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.15s ease;
+}
+
+.book-list-row:hover {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+}
+
+/* Small thumbnail image on the left */
+.book-list-image-wrap {
+  width: 52px;
+  height: 68px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #ebf4ff;
+}
+
+.book-list-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder when no image */
+.book-list-no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Middle section: title, author, genre */
+.book-list-info {
+  flex: 1;
+  min-width: 0; /* allow text truncation */
+}
+
+.book-list-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-list-author {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 4px;
+}
+
+/* Small metadata chips: genre + isbn */
+.book-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.book-list-genre {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2b6cb0;
+  background-color: #ebf4ff;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.book-list-isbn {
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+/* Copies count shown in the right column */
+.book-list-copies {
+  text-align: center;
+  flex-shrink: 0;
+  min-width: 80px;
+}
+
+.book-list-copies-avail {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.book-list-copies-label {
+  font-size: 11px;
+  color: #718096;
+  margin-top: 2px;
+}
+
+/* Edit + Delete buttons in the row */
+.book-list-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Shared icon-button style in list view */
+.btn-list {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: 1.5px solid;
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   13. PAGINATION
+   Row of page number buttons at the bottom of the catalog.
+   ============================================================ */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+/* Prev / Next arrow buttons */
+.pagination-btn {
+  height: 38px;
+  padding: 0 16px;
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  color: #2b6cb0;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #ebf4ff;
+  border-color: #2b6cb0;
+}
+
+.pagination-btn:disabled {
+  color: #a0aec0;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  background-color: #f7fafc;
+}
+
+/* Individual numbered page button */
+.pagination-page {
+  width: 38px;
+  height: 38px;
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Roboto", sans-serif;
+  color: #4a5568;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* The currently active page number */
+.pagination-page.active {
+  background-color: #2b6cb0;
+  border-color: #2b6cb0;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pagination-page:hover:not(.active) {
+  background-color: #ebf4ff;
+  border-color: #2b6cb0;
+  color: #2b6cb0;
+}
+
+/* "Page X of Y" summary text */
+.pagination-info {
+  font-size: 14px;
+  color: #718096;
+  margin: 0 8px;
+}
+
+
+/* ============================================================
+   14. MODAL OVERLAY
+   Semi-transparent dark background behind any modal/dialog.
+   ============================================================ */
+.modal-overlay {
+  position: fixed;    /* cover the entire viewport */
+  inset: 0;           /* shorthand for top:0; right:0; bottom:0; left:0 */
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;       /* above the sticky nav bar */
+  padding: 20px 16px;
+
+  /* Fade in when the modal appears */
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* ============================================================
+   15. BOOK FORM MODAL
+   The white card that holds the Add / Edit book form.
+   ============================================================ */
+.book-form-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;        /* never taller than 90% of the screen */
+  overflow-y: auto;        /* scroll inside the card if content is long */
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Top of the form modal: title + close × button */
+.book-form-header {
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.book-form-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+/* × close button */
+.book-form-close {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  color: #718096;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.book-form-close:hover {
+  background-color: #f7fafc;
+  color: #2d3748;
+}
+
+/* The form element inside the modal */
+.book-form {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Two-column row for fields that fit side by side (Total/Available copies) */
+.book-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Label + input pair */
+.book-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Label text */
+.book-form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a5568;
+}
+
+/* Required field asterisk */
+.book-form-label .required {
+  color: #e53e3e;
+  margin-left: 2px;
+}
+
+/* Text / number inputs inside the form */
+.book-form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+  color: #2d3748;
+  background-color: #f7fafc;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.book-form-input:focus {
+  border-color: #3182ce;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+}
+
+.book-form-input::placeholder {
+  color: #a0aec0;
+  font-weight: 300;
+}
+
+/* File input for cover image */
+.book-form-file {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+  color: #4a5568;
+  background-color: #f7fafc;
+  border: 1.5px dashed #cbd5e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.book-form-file:hover {
+  border-color: #3182ce;
+}
+
+/* Preview of the cover image (current or newly selected) */
+.book-form-image-preview {
+  margin-top: 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100%;
+  height: 120px;
+  border: 1px solid #e2e8f0;
+}
+
+.book-form-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hint text below a field */
+.book-form-hint {
+  font-size: 12px;
+  color: #a0aec0;
+  margin-top: 2px;
+}
+
+/* Error message inside the form */
+.book-form-error {
+  background-color: #fff5f5;
+  border: 1px solid #feb2b2;
+  border-left: 4px solid #fc8181;
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #c53030;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* Form action buttons row */
+.book-form-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 0 28px 24px;
+}
+
+/* Cancel button */
+.btn-cancel {
+  height: 42px;
+  padding: 0 20px;
+  background-color: transparent;
+  color: #4a5568;
+  border: 1.5px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background-color: #f7fafc;
+  border-color: #a0aec0;
+}
+
+/* Submit (Save / Update) button */
+.btn-submit {
+  height: 42px;
+  padding: 0 24px;
+  background-color: #2b6cb0;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.btn-submit:hover {
+  background-color: #2c5282;
+  box-shadow: 0 4px 12px rgba(43, 108, 176, 0.35);
+}
+
+.btn-submit:active {
+  transform: scale(0.98);
+}
+
+.btn-submit:disabled {
+  background-color: #90cdf4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
+/* ============================================================
+   16. DELETE CONFIRMATION MODAL
+   Small dialog asking the user to confirm deletion.
+   ============================================================ */
+.delete-modal-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 28px;
+  animation: slideUp 0.2s ease;
+  text-align: center;
+}
+
+/* Warning icon at the top */
+.delete-modal-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.delete-modal-card h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 10px;
+}
+
+.delete-modal-card p {
+  font-size: 14px;
+  color: #718096;
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+/* The book title shown in the warning */
+.delete-modal-book-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* Warning text below the book name */
+.delete-modal-warning {
+  font-size: 13px;
+  color: #e53e3e;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+/* Button row */
+.delete-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Red delete button */
+.btn-delete-confirm {
+  height: 42px;
+  padding: 0 24px;
+  background-color: #e53e3e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-delete-confirm:hover {
+  background-color: #c53030;
+}
+
+.btn-delete-confirm:disabled {
+  background-color: #feb2b2;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================
+   17. RESPONSIVE — MOBILE (max-width: 640px)
+   Adjusts layouts for small phone screens.
+   ============================================================ */
+@media (max-width: 640px) {
+  /* Nav: hide divider and page name, keep logo and logout */
+  .catalog-nav {
+    padding: 0 16px;
+  }
+
+  .catalog-nav-divider,
+  .catalog-nav-page {
+    display: none;
+  }
+
+  .catalog-nav-user {
+    display: none;
+  }
+
+  /* Content area: tighter padding */
+  .catalog-content {
+    padding: 20px 12px 48px;
+  }
+
+  /* Toolbar: stack vertically */
+  .catalog-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-add-book {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Single column grid on phones */
+  .book-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* List rows: stack copies below the info */
+  .book-list-row {
+    flex-wrap: wrap;
+  }
+
+  .book-list-copies {
+    order: 3; /* show copies after actions */
+  }
+
+  /* Form: single-column for copies row */
+  .book-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Form modal: wider on phone */
+  .book-form-card {
+    max-width: 100%;
+  }
+
+  /* Form footer: full-width buttons */
+  .book-form-footer {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+  }
+}
+
+
+/* ============================================================
+   18. RESPONSIVE — TABLET (641px – 1024px)
+   Two-column grid, side-by-side nav items.
+   ============================================================ */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .book-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

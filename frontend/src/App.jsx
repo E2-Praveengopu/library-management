@@ -4,6 +4,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import AdminDashboard from "./pages/AdminDashboard";
 import MemberDashboard from "./pages/MemberDashboard";
+import BookCatalog from "./pages/BookCatalog";
+import { BookProvider } from "./context/BookContext";
 
 /**
  * ProtectedRoute Component
@@ -63,7 +65,15 @@ function ProtectedRoute({ children, requiredRole }) {
  *   /                  → Login page (the default page)
  *   /signup            → Signup page
  *   /admin/dashboard   → Admin Dashboard (admin token required)
+ *   /admin/books       → Book Catalog — add, edit, delete books (admin only)
  *   /member/dashboard  → Member Dashboard (member token required)
+ *
+ * NOTE on BookProvider:
+ *   The BookCatalog route is wrapped in <BookProvider> which provides
+ *   the shared book state (books list, pagination, modals) to the entire
+ *   catalog page and all its child components via React Context.
+ *   We wrap only the catalog route (not the whole app) so the context is
+ *   only active when needed — keeping the app efficient.
  */
 function App() {
   return (
@@ -79,6 +89,23 @@ function App() {
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/*
+          Book Catalog route — admin only.
+          Wrapped in BookProvider so BookCatalog and all its child components
+          (BookCard, BookForm, DeleteModal, etc.) can access the shared
+          book state via useBookContext() without prop drilling.
+        */}
+        <Route
+          path="/admin/books"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <BookProvider>
+                <BookCatalog />
+              </BookProvider>
             </ProtectedRoute>
           }
         />
